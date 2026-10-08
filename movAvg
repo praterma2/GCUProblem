@@ -1,0 +1,65 @@
+/*  Recording Data
+    Dr. matt prater
+    06oct2026
+    matt.prater@my.gcu.edu
+
+*/
+#include <Adafruit_CircuitPlayground.h>
+#include <Adafruit_Circuit_Playground.h>
+
+int dataArrSize = 10;
+int sampleSize = 100;
+
+void setup() {
+  //set up serial port
+  Serial.begin(115200);
+  while(!Serial);
+  //setup CPE library
+  CircuitPlayground.begin();
+  //fill initial dataArr
+  int dataArr[dataArrSize];
+  for(int i{0}; i < (sizeof(dataArr)/sizeof(int)); i++){
+    dataArr[i] = CircuitPlayground.lightSensor();
+    delay(100);
+  }
+  //print dataArr
+  Serial.print("Initial data: (");
+  for(int i{0}; i < (sizeof(dataArr)/sizeof(int)-1); i++){
+    Serial.print(dataArr[i]);
+    Serial.print(", ");
+  }
+    Serial.print(dataArr[(sizeof(dataArr)/sizeof(int)-1)]);
+    Serial.println(")");
+  //set up new data points for sample size
+  for(int i{0}; i < (sampleSize - dataArrSize); i++){
+    //move everythng to make space
+    for(int j{0}; j < (dataArrSize - 1); j++){
+      dataArr[j] = dataArr[j+1];
+    }
+    //collect new point
+    dataArr[(dataArrSize - 1)] = CircuitPlayground.lightSensor();
+    //print new data array
+    for(int j{0}; j < (sizeof(dataArr)/sizeof(int)-1); j++){
+      Serial.print(dataArr[i]);
+      Serial.print(", ");
+    }
+    Serial.print(dataArr[(sizeof(dataArr)/sizeof(int)-1)]);
+    Serial.print(")");
+    /*
+    //generate moving average
+    int sum{0};
+    for(int j{0}; j < dataArrSize; j++){
+      sum = sum + dataArr[j];
+    }
+    float average = sum/dataArrSize;
+    Serial.print(" moving average = ");
+    Serial.println(average);
+    */
+    delay(100);
+  }
+
+}
+
+void loop() {
+
+}
